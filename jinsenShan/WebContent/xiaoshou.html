@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>销售</title>
+	<link rel="stylesheet" href="js/bstable/css/bootstrap.min.css">
+	<link rel="stylesheet" href="js/bstable/css/bootstrap-table.css">
+	<link rel="stylesheet" href="css/all.css">
+	<link rel="stylesheet" href="js/jQueryCalendar/calendar.css">
+	<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+
+	<!-- Custom CSS -->
+	<link href="css/style.css" rel='stylesheet' type='text/css' />
+
+	<!-- font-awesome icons CSS -->
+	<link href="css/font-awesome.css" rel="stylesheet">
+	<!-- //font-awesome icons CSS-->
+
+	<!-- side nav css file -->
+	<link href='css/SidebarNav.min.css' media='all' rel='stylesheet' type='text/css'/>
+	<!-- //side nav css file -->
+
+	<!-- js-->
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/modernizr.custom.js"></script>
+	<style type="text/css">
+		.table_p{line-height: 28px;border-bottom: 1px #d0e6ec solid;position: relative;margin-bottom: 10px;
+			margin-top: 35px;}
+		.table_p span{border-bottom: 3px #42cdec solid;display: inline-block;position: absolute;bottom: -1px;font-weight: bold;font-size: 20px}
+		.but_p button{width: 80px}
+		        #h li{float: left; }
+#h a{font-size:15px;width: 230px; height: 30px;padding: 10px 0;text-align: center;  background: #3c763d; display: block; text-decoration:none; color:white}
+#h a:hover{color:white;background: green}
+	</style>
+<script type="text/javascript">
+function add()
+{
+	var length=$("#codetable tr").length;
+	var length=length*2;
+	var str="<tr><td class='top-table-label' >码单"+(length-1)+"：</td>"
+	        +"<td><input type='text' id='code"+(length-1)+"'></td>"
+	        +"<td class='top-table-label' >码单"+length+"：</td>"
+	        +"<td><input type='text' id='code"+length+"'></td></tr>";
+	$("#codetable").append(str); 
+}
+
+
+function mycreate()
+{
+	var length=$("#codetable tr").length;
+	var workid=document.getElementById("countid").value;
+	if(workid=="")
+		{
+		    alert("请输入结算单号！");
+		}
+	else
+		{
+	length=(length-1)*2;
+	var group=[];
+	for(var i=1;i<=length;i++)
+		{
+		     if(document.getElementById("code"+i+"").value!="")
+		     group[i-1]=document.getElementById("code"+i+"").value;
+		}
+	var mygroup=JSON.stringify(group);	
+	$.ajax({
+        url:"countServlet",
+        data:{
+            "action":"mysave",
+            "mygroup":mygroup,
+            "countid":workid,
+        },
+        type: "POST",
+        dataType:"json",
+        success: function (data) {
+        	if(data==null)
+        		{
+        		alert("您所需要生成的码单信息有误，请重新核对");
+        		}
+        	else{
+        		var code=data["code"];
+            	var tree=data["tree"];
+            	$("#mysomething").empty();
+            	for(var i=0;i<code.length;i++)
+        		{
+            		var j=code[i];
+        		var str2="<table class='top-table'>"
+				       +"<tr><p class='table_p'><span>码单"+j.codeid+"</span></p></tr>"
+				    +"<tr><td class='top-table-label'>伐区标品号：</td>"
+					+"<td><input type='text' id='checknum' disabled='disabled' value='"+j.checknum+"'></td>"
+					+"<td class='top-table-label'>采伐证号：</td>"
+					+"<td><input type='text' disabled='disabled' id='cutnum' value='"+j.cutnum+"'></td></tr>"
+					+"<tr><td class='top-table-label'>供货单位：</td>"
+					+"<td><input type='text' disabled='disabled' id='shipping' value='"+j.shipping+"'></td>"
+					+"<td class='top-table-label'>供货地点：</td>"
+					+"<td><input type='text' disabled='disabled' id='shipplace' value='"+j.shipplace+"'></td></tr>"
+					+"<tr><td class='top-table-label' >终端购货人：</td>"
+					+"<td><input type='text' id='finbuyer'  value='"+j.finbuyer+"'></td>"
+					+"<td class='top-table-label' >中标人：</td>"
+					+"<td><input type='text' id='getPerson' value='"+j.getperson+"'></td></tr></table>";
+        		$("#mysomething").append(str2); 
+               }
+         	    $("ttt").empty();
+                var str="<tr><td class='top-table-label'>材种：</td>"
+				+"<td class='top-table-label'>长度：</td>"
+				+"<td class='top-table-label'>径级：</td>"
+				+"<td class='top-table-label'>根数：</td>"
+				+"<td class='top-table-label'>材积：</td>"
+				+"<td class='top-table-label'>单价：</td>"
+				+"<td class='top-table-label'>金额：</td></tr>";
+                for(var i=0;i<tree.length;i++)
+ 		       {
+ 			    var t=tree[i];
+         	    str+="<tr><td><select><option>"+t.treetype+"</option></select></td>"
+ 				+"<td><input type='text' value='"+t.tlong+"' ></td>"
+ 				+"<td><input type='text' value='"+t.tradius+"' ></td>"
+ 				+"<td><input type='text' value='"+t.num+"' ></td>"
+ 				+"<td><input type='text' value='"+t.tvolume+"' ></td>"
+ 				+"<td><input type='text' value='"+t.unitprice+"' ></td>"
+ 				+"<td><input type='text' value='"+t.totalnum+"' ></td></tr>";
+                }
+         	ttt.innerHTML=str;
+         	
+        }
+       }
+    })
+   }
+}
+function mysave()
+{
+	var length=$("#codetable tr").length;
+	var workid=document.getElementById("countid").value;
+	if(workid=="")
+		{
+		    alert("请输入结算单号！");
+		}
+	else
+		{
+	length=(length-1)*2;
+	var group=[];
+	for(var i=1;i<=length;i++)
+		{
+		     if(document.getElementById("code"+i+"").value!="")
+		     group[i-1]=document.getElementById("code"+i+"").value;
+		}
+	var mygroup=JSON.stringify(group);	
+	$.ajax({
+        url:"countServlet",
+        data:{
+            "action":"finsave",
+            "mygroup":mygroup,
+            "countid":workid,
+        },
+        type: "POST",
+        dataType:"html",
+        success: function (data) {
+        	alert(data);
+        }
+	})
+        }
+	}
+
+</script>
+</head>
+<body>
+
+<main class="all">
+    <aside class="aside">
+    <header class="aside-head"><img src="img/logo.jpg"> </header>
+    <div class="aside-per">
+        <div><img src="img/my.jpg" class="per-img"> </div>
+        <div><h3>xxxx</h3>
+        <p>行政专员</p>
+        <p>公司人事部一组</p></div>
+    </div>
+    <div class="clear"></div>
+    <div id="h">
+    	<ul style="list-style-type:none; display:table; margin:0 auto">
+    		<li ><a href="index.html" target="fraName">码单录入</a> </li>
+                <li><a href="writeshenhe.html" target="fraName">码单审核</a> </li>
+                <li><a href="laowu.html" target="fraName">劳务结算单</a> </li>
+                <li   class="active-li"><a href="xiaoshou.html" target="fraName">销售结算单</a> </li>
+                <li ><a href="tongji.html" target="fraName">统计报表</a> </li>
+    	</ul>
+    </div>
+</aside>
+	<article class="artlce">
+		<header class="aside-head">
+			<ul class="nav-ul">
+				<li><a href="index.html" target="fraName">码单录入</a> </li>
+				<li><a href="writeshenhe.html" target="fraName">码单审核</a> </li>
+				<li><a href="laowu.html" target="fraName">劳务结算单</a> </li>
+				<li class="active-li"><a href="xiaoshou.html" target="fraName">销售结算单</a> </li>
+				<li><a href="tongji.html" target="fraName">统计报表</a> </li>
+			</ul>
+		</header>
+		<div class="home-tab"><i class="tab-i"></i> 所在位置：<span>销售结算单</span></div>
+		<div class="find-top">
+			<p class="p-tail"><i class="i-tail"></i>该界面是生成销售结算单的主要界面</p>
+		</div>
+		<div class="find-top1">
+		<table class="top-table">
+            <tr ><p class="table_p"><span>请输入销售结算单号</span></p>
+            </tr>
+            <tr>
+                <td class="top-table-label" >结算单号：</td>
+                <td><input type="text" id="countid" value=""></td>
+            </tr>
+        </table>
+      <table class="top-table" id="codetable">
+            <tr><p class="table_p"><span>请输入结算单所依赖的码单信息</span></p>
+            </tr>
+            <tr>
+                <td class="top-table-label" >码单1：</td>
+                <td><input type="text" id="code1" value=""></td>
+                <td class="top-table-label" >码单2：</td>
+                <td><input type="text" id="code2" value=""></td>
+            </tr>
+        <tr>
+            <td class="top-table-label" >码单3：</td>
+            <td><input type="text" id="code3" value=""></td>
+            <td class="top-table-label"  >码单4：</td>
+            <td><input type="text" id="code4" value=""></td>
+        </tr>
+      </table>
+      <table class="top-table" >
+         <tr><td colspan="6" style="margin-top: 10px;margin-bottom: 10px"><button class="add-but" onclick="add()"><i class="glyphicon glyphicon-edit"></i> 添加</button>
+        <button class="add-del" onclick="mycreate()"><i class="glyphicon glyphicon-remove"></i>生成</button></td>
+        </tr>
+        </table>
+        <div id="mysomething">
+			<table class="top-table">
+				<tr><p class="table_p"><span>主要信息</span></p>
+				</tr>
+				<tr><td class="top-table-label">伐区标品号：</td>
+					<td><input type="text" id="checknum" disabled="disabled"></td>
+					<td class="top-table-label">采伐证号：</td>
+					<td><input type="text" disabled="disabled" id="cutnum"></td>
+				</tr>
+				<tr><td class="top-table-label">供货单位：</td>
+					<td><input type="text" disabled="disabled" id="shipping"></td>
+					<td class="top-table-label">供货地点：</td>
+					<td><input type="text" disabled="disabled" id="shipplace"></td>
+				</tr>
+				<tr><td class="top-table-label" id="finbuyer" >终端购货人：</td>
+					<td><input type="text"></td>
+					<td class="top-table-label" id="getPerson">中标人：</td>
+					<td><input type="text"></td>
+				</tr>
+			</table>
+		</div>
+			<table class="top-table" id="ttt">
+				<tr><p class="table_p"><span>材种信息</span></p>
+				</tr>
+				<tr><td class="top-table-label" id="treetype">材种：</td>
+					<td class="top-table-label" id="t">长度：</td>
+					<td class="top-table-label">径级：</td>
+					<td class="top-table-label">根数：</td>
+					<td class="top-table-label">材积：</td>
+					<td class="top-table-label">单价：</td>
+					<td class="top-table-label">金额：</td>
+				</tr>
+				<tr>
+					<td><select><option>材种选择</option></select></td>
+					<td><input type="text"></td>
+					<td><input type="text"></td>
+					<td><input type="text"></td>
+					<td><input type="text"></td>
+					<td><input type="text"></td>
+					<td><input type="text"></td>
+				</tr>
+
+			</table>
+			<table class="table" >
+				<tbody>
+				<p class="table_p"><span>审核人员信息</span></p>
+				<tr>
+					<td>复核员1号:<span></span></td>
+					<td><p id="checkone"></p></td>
+					<td><p id="reasonone"></p></td>
+					<td>复核员2号:<span></span></td>
+					<td><p id="checktwo"></p></td>
+					<td><p id="reasontwo"></p></td>
+					<td>录入员:<span></span></td>
+					<td><input type="text"></td>
+					<td>制表时间:<span></span></td>
+					<td><input type="text" style="width: 50px;"> <span>年</span>
+						<input type="text" style="width: 30px;"> <span>月</span>
+						<input type="text" style="width: 30px;"> <span>日</span>
+					</td>
+				</tr>
+				<tr><td colspan="6" style="text-align: center">
+					<button class="add-but" onclick="mysave()"><i class="glyphicon glyphicon-edit"></i> 提交</button>
+				</tbody>
+			</table>
+		</div>
+		<div class="table-con">
+			<table id="table1" class="table-style"></table>
+		</div>
+
+		<script src="js/jquery.js"></script>
+		<script src="js/bstable/js/bootstrap.min.js"></script>
+		<script src="js/bstable/js/bootstrap-table.js"></script>
+		<script src="js/bstable/js/bootstrap-table-zh-CN.min.js"></script>
+
+	</article>
+</main>
+</body>
+</html>

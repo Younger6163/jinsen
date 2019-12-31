@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>劳务结算单</title>
+    <link rel="stylesheet" href="js/bstable/css/bootstrap.min.css">
+    <link rel="stylesheet" href="js/bstable/css/bootstrap-table.css">
+    <link rel="stylesheet" href="css/all.css">
+    <link rel="stylesheet" href="js/jQueryCalendar/calendar.css">
+    <link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel='stylesheet' type='text/css' />
+
+    <!-- font-awesome icons CSS -->
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <!-- //font-awesome icons CSS-->
+
+    <link href='css/SidebarNav.min.css' media='all' rel='stylesheet' type='text/css'/>
+    <!-- js-->
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/modernizr.custom.js"></script>
+    <style type="text/css">
+        .table_p{line-height: 28px;border-bottom: 1px #d0e6ec solid;position: relative;margin-bottom: 10px;
+            margin-top: 35px;}
+        .table_p span{border-bottom: 3px #42cdec solid;display: inline-block;position: absolute;bottom: -1px;font-weight: bold;font-size: 20px}
+        .but_p button{width: 80px}
+        #h li{float: left; }
+#h a{font-size:15px;width: 230px; height: 30px;padding: 10px 0;text-align: center;  background: #3c763d; display: block; text-decoration:none; color:white}
+#h a:hover{color:white;background: green}
+    </style>
+<script src="js/bstable/js/bootstrap.min.js"></script>  
+<script type="text/javascript">
+function add()
+{
+	var length=$("#codetable tr").length;
+	var length=length*2;
+	var str="<tr><td class='top-table-label' >码单"+(length-1)+"：</td>"
+            +"<td><input type='text' id='code"+(length-1)+"'></td>"
+            +"<td class='top-table-label' >码单"+length+"：</td>"
+            +"<td><input type='text' id='code"+length+"'></td></tr>";
+	$("#codetable").append(str); 
+}
+
+function mycreate()
+{
+	var length=$("#codetable tr").length;
+	var workid=document.getElementById("workid").value;
+	if(workid=="")
+		{
+		    alert("请输入劳务表号！");
+		}
+	else
+		{
+	length=(length-1)*2;
+	var group=[];
+	for(var i=1;i<=length;i++)
+		{
+		     if(document.getElementById("code"+i+"").value!="")
+		     group[i-1]=document.getElementById("code"+i+"").value;
+		}
+	var mygroup=JSON.stringify(group);	
+	$.ajax({
+        url:"laowuServlet",
+        data:{
+            "action":"mysave",
+            "mygroup":mygroup,
+            "workid":workid
+        },
+        type: "POST",
+        dataType:"json",
+        success: function (data) {
+        	if(data==null)
+        		{
+        		alert("您所需要生成的码单信息有误，请重新核对");
+        		}
+        	else{
+        	var code=data["work"];
+        	var tree=data["tree"];
+        	$("#mysomething").empty();
+        	for(var i=0;i<code.length;i++)
+    		{
+        		var j=code[i];
+    		var str2="<table class='top-table'>"
+            +"<tr><p class='table_p'><span>码单"+j.workid+"</span></p>"
+            +"</tr><tr><td class='top-table-label'>伐区标品号：</td>"
+            +"<td><input type='text' id='checknum' disabled='disabled' value='"+j.checkNum+"'></td>"
+             +"<td class='top-table-label' >采伐证号：</td>"
+             +"<td><input type='text' disabled='disabled' id='cutnum' value='"+j.cutNum+"'></td></tr>"
+            +"<tr><td class='top-table-label'>劳务承包人：</td>"
+            +"<td><input type='text' disabled='disabled' id='forperson' value='"+j.forperson+"'></td>"
+            +"<td class='top-table-label' >伐区管理单位：</td>"
+             +"<td><input type='text' disabled='disabled' id='manageUnit' value='"+j.manageUnit+"'></td></tr></table>";
+    		$("#mysomething").append(str2); 
+    		}
+        	$("#ttt").empty();
+        	var str="<tr><p class='table_p'><span>材种信息</span></p></tr>"
+                  +"<tr><td class='top-table-label' >材种：</td>"
+                  +"<td class='top-table-label'>材积：</td>"
+                  +"<td class='top-table-label'>单价：</td>"
+                  +"<td class='top-table-label'>金额：</td></tr>";
+        	for(var i=0;i<tree.length;i++){
+        		var j=tree[i];
+        	str+="<tr id='"+(i+1)+"'><td><select id='treetype"+(i+1)+"' ><option>"+j.type+"</option></select></td>"
+                  +"<td><input type=text disabled=disabled value='"+j.tvolume+"' id='volume"+(i+1)+"'></td>"
+                   +"<td><input type='text' id='unitprice"+(i+1)+"' value='"+j.unitprice+"'></td>"
+                  +"<td><input type='text' id='price"+(i+1)+"' onclick='priceCount("+(i+1)+")' value='"+j.price+"'></td></tr>"
+        	}
+        	ttt.innerHTML=str;
+        }}
+    })
+}
+}
+
+function mysave()
+{
+	var length=$("#codetable tr").length;
+	var workid=document.getElementById("workid").value;
+	if(workid=="")
+		{
+		    alert("请输入劳务表号！");
+		}
+	else
+		{
+	length=(length-1)*2;
+	var group=[];
+	for(var i=1;i<=length;i++)
+		{
+		     if(document.getElementById("code"+i+"").value!="")
+		     group[i-1]=document.getElementById("code"+i+"").value;
+		}
+	var mygroup=JSON.stringify(group);	
+	$.ajax({
+        url:"laowuServlet",
+        data:{
+            "action":"savelaowu",
+            "mygroup":mygroup,
+            "workid":workid,
+        },
+        type: "POST",
+        dataType:"html",
+        success: function (data) {
+        	alert(data);
+        }
+	})
+        }
+	}
+
+function priceCount(id)
+{
+	
+	var volume=document.getElementById("volume"+id+"").value;
+	var unitprice=document.getElementById("unitprice"+id+"").value;
+	document.getElementById("price"+id+"").value=(volume*unitprice);
+}
+function treeAdd()
+{
+	var map={};
+	var kk=0;
+	var workid=$("#workid").val();
+	if(workid=="")
+		{
+		alert("请先输入码单号！");
+		}
+	else{
+		var length=$("#ttt tr").length;
+		length=length-2;
+    	for(var id=1;id<=length;id++){
+    		var group=[];
+    	    group[0]=document.getElementById("treetype"+id+"").value;
+    	    group[1]=document.getElementById("volume"+id+"").value;
+    	    group[2]=document.getElementById("unitprice"+id+"").value;
+    	    group[3]=document.getElementById("price"+id+"").value;
+    	    if(group[0]==""|| group[1]==""|| group[2]=="" || group[3]=="")
+    	    	{
+    	    	alert("请将信息填写完整！");
+    	    	}
+    	    else{
+               map[id-1]=group;
+    	    }
+    	}
+    	kk=length;
+    var mymap=JSON.stringify(map);
+    $.ajax({
+        url:"laowuServlet",
+        data:{
+            "action":"treeAdd",
+            "newtree":mymap,
+            "id":kk,
+            "workid":workid,
+        },
+        type: "POST",
+        dataType:"html",
+        success: function (data) {
+        	alert(data);
+        }
+    })
+    }
+}	
+
+</script>
+</head>
+<body>
+<main class="all">
+    <aside class="aside">
+    <header class="aside-head"><img src="img/logo.jpg"> </header>
+    <div class="aside-per">
+        <div><img src="img/my.jpg" class="per-img"> </div>
+        <div><h3>xxxx</h3>
+        <p>行政专员</p>
+        <p>公司人事部一组</p></div>
+    </div>
+    <div class="clear"></div>
+    <div id="h">
+    	<ul style="list-style-type:none; display:table; margin:0 auto">
+    		<li ><a href="index.html" target="fraName">码单录入</a> </li>
+                <li><a href="writeshenhe.html" target="fraName">码单审核</a> </li>
+                <li  class="active-li"><a href="laowu.html" target="fraName">劳务结算单</a> </li>
+                <li><a href="xiaoshou.html" target="fraName">销售结算单</a> </li>
+                <li><a href="tongji.html" target="fraName">统计报表</a> </li>
+    	</ul>
+    </div>
+</aside>
+    <article class="artlce">
+        <header class="aside-head">
+            <ul class="nav-ul">
+                <li ><a href="index.html" target="fraName">码单录入</a> </li>
+                <li><a href="writeshenhe.html" target="fraName">码单审核</a> </li>
+                <li class="active-li"><a href="laowu.html" target="fraName">劳务结算单</a> </li>
+                <li><a href="xiaoshou.html" target="fraName">销售结算单</a> </li>
+                <li><a href="tongji.html" target="fraName">统计报表</a> </li>
+            </ul>
+        </header>
+    <div class="home-tab"><i class="tab-i"></i> 所在位置：<span>劳务结算单</span></div>
+    <div class="find-top">
+        <p class="p-tail"><i class="i-tail"></i>该界面是生成劳务结算单的主要界面</p>
+    </div>
+    <div class="find-top1">
+            <table class="top-table">
+            <tr ><p class="table_p"><span>请输入劳务表号</span></p>
+            </tr>
+            <tr>
+                <td class="top-table-label" >劳务表号：</td>
+                <td><input type="text" id="workid" value=""></td>
+            </tr>
+        </table>
+      <table class="top-table" id="codetable">
+            <tr><p class="table_p"><span>请输入劳务表所依赖的码单信息</span></p>
+            </tr>
+            <tr>
+                <td class="top-table-label" >码单1：</td>
+                <td><input type="text" id="code1" value=""></td>
+                <td class="top-table-label" >码单2：</td>
+                <td><input type="text" id="code2" value=""></td>
+            </tr>
+        <tr>
+            <td class="top-table-label" >码单3：</td>
+            <td><input type="text" id="code3" value=""></td>
+            <td class="top-table-label"  >码单4：</td>
+            <td><input type="text" id="code4" value=""></td>
+        </tr>
+      </table>
+        <table class="top-table" >
+         <tr><td colspan="6" style="margin-top: 10px;margin-bottom: 10px"><button class="add-but" onclick="add()"><i class="glyphicon glyphicon-edit"></i> 添加</button>
+        <button class="add-del" onclick="mycreate()"><i class="glyphicon glyphicon-remove"></i>生成</button></td>
+        </tr>
+        </table>
+        <div id="mysomething">
+        <table class="top-table">
+          <tr><p class="table_p"><span>主要信息</span></p>
+          </tr>
+          <tr><td class="top-table-label">伐区标品号：</td>
+              <td><input type="text" id="checknum" disabled="disabled"></td>
+              <td class="top-table-label" >采伐证号：</td>
+              <td><input type="text" disabled="disabled" id="cutnum"></td>
+         </tr>
+          <tr><td class="top-table-label">劳务承包人：</td>
+              <td><input type="text" disabled="disabled" id="forperson"></td>
+              <td class="top-table-label" >伐区管理单位：</td>
+              <td><input type="text" disabled="disabled" id="manageUnit"></td>
+              </tr>
+      </table>
+        </div>
+          <table class="top-table" id="ttt">
+              <tr><p class="table_p"><span>材种信息</span></p>
+              </tr>
+          <tr><td class="top-table-label" >材种：</td>
+              <td class="top-table-label">材积：</td>
+              <td class="top-table-label">单价：</td>
+              <td class="top-table-label">金额：</td>
+          </tr>
+          <tr>
+              <td><select id="treetype"><option value="">材种选择</option>
+              <option value="shan">杉原木</option>
+              <option value="song">松原木</option>
+              <option value="za">杂原木</option>
+              </select></td>
+              <td><input type="text" disabled="disabled" id="tvolume"></td>
+              <td><input type="text" disabled="disabled" id="unitprice"></td>
+              <td><input type="text" disabled="disabled" id="price"></td>
+          </tr>
+      </table>
+     <table>
+      <tr>
+         <div> <button class="btn btn-default" type="button"  onclick="treeAdd()">提交</button></div>
+               </tr>
+          </table>   
+        <table class="table" >
+            <tbody>
+            <p class="table_p"><span>审核人员信息</span></p>
+            <tr>
+                <td>复核员1号:<span></span></td>
+                <td><input type="text" disabled="disabled" id="checkone"></td>
+                <td>复核员2号:<span></span></td>
+                <td><input type="text" disabled="disabled" id="checktwo"></td>
+                <td>录入员:<span></span></td>
+                <td><input type="text" disabled="disabled" id="checkthree"></td>
+                <td>制表时间:<span></span></td>
+                <td><input type="date" style="width: 50px;" disabled="disabled"> <span>年</span>
+                </td>
+            </tr>
+            <tr><td colspan="6" style="text-align: center">
+                <button class="add-but"><i class="glyphicon glyphicon-edit" onclick="mysave()"></i> 提交</button>
+                <button class="add-del"><i class="glyphicon glyphicon-remove"></i> 取消</button></td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="table-con">
+        <table id="table1" class="table-style"></table>
+    </div>
+</article>
+</main>
+
+</body>
+</html>
