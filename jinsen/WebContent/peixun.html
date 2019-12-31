@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ch-ZN">
+<head>
+    <meta charset="UTF-8">
+    <title>员工学习经历</title>
+    <link rel="stylesheet" href="js/bstable/css/bootstrap.min.css">
+    <link rel="stylesheet" href="js/bstable/css/bootstrap-table.css">
+    <link rel="stylesheet" href="css/all.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1 , user-scalable=no">
+    <script src="js/bstable/js/bootstrap.min.js"></script>
+    <script src="js/bstable/js/jquery-2.2.0.min.js"></script>
+</head>
+<body>
+<div class="container" >
+    <div class="home-tab"><i class="tab-i"></i> 所在位置：<span>员工培训信息</span></div>
+    <div class="find-top">
+        <p class="p-tail"><i class="i-tail"></i> 该页面是对员工培训信息的管理</p>
+    </div>
+    <div class="find-top">
+        <button class="add-but" onclick="exce()"><i class="glyphicon glyphicon-edit" ></i> 批量导出</button> <button class="add-del" onclick="del()"><i class="glyphicon glyphicon-remove"></i>批量删除</button>
+        <span class="find-span">员工工号检索：<input type="text" class="input-find"><button class="add-but"><i class="glyphicon glyphicon-search"></i> 查找</button></span>
+    </div>
+    <div class="table-con" id="peixun">
+        <table id="table3" class="table">
+            <thead>
+            <tr>
+                <th>员工工号</th>
+                <th>员工姓名</th>
+                <th>培训开始时间</th>
+                <th>培训结束时间</th>
+                <th>培训证明</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <p class="table_p"><span style="font-size:18px;font-style: initial;">员工培训信息</span></p>
+
+
+            </tbody>
+        </table>
+        <div class="container">
+            <ul>
+                <li>
+                    <a href="" role="button"  class="btn btn-primary" data-toggle="modal" data-target="#my1" style="background-color: #ec971f;">添加员工培训信息</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- 模态框model!-->
+<div class="modal fade" id="my1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"><!--培训模态框！-->
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="my1ModalLabel">添加职工培训信息</h4>
+            </div>
+            <div class="modal-body">
+                <form action="#">
+                    <div class="form-group">
+                        <label for="staff_id1">员工编号</label>
+                        <input type="text" id="staff_id1" class="form-control" placeholder="输入员工编号">
+                    </div>
+                    <div class="form-group">
+                        <label for="train_name">培训课程</label>
+                        <input type="text" id="train_name" class="form-control" placeholder="培训课程">
+                    </div>
+                    <div class="form-group">
+                        <label for="gain_time">培训开始时间</label>
+                        <input type="date" id="train_start_time" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="train_end_time">培训结束时间</label>
+                        <input type="date" id="train_end_time" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="train_certificate">培训证明材料</label>
+                        <input type="file" id="train_certificate" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="add_train()">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/bstable/js/jquery-2.2.0.min.js"></script>
+<script src="js/bstable/js/js-2.1.4.min.js"></script>
+<script src="js/bstable/js/bootstrap-table.js"></script>
+<script src="js/bstable/js/bootstrap.min.js"></script>
+
+
+<script>
+    // $(function(){
+    //   table1();
+    //})
+    $(document).ready(function() {
+
+        t3();
+
+    });
+
+    function t3() {                                      //培训信息的显示
+        $('#table3').bootstrapTable({
+            method: "post",
+            striped: false,
+            singleSelect: false,
+            url: "service?action=train",
+            dataType: "json",
+            pagination: true, //分页
+            pageSize: 10,
+            pageNumber: 1,
+            search: true, //显示搜索框
+            contentType: "application/x-www-form-urlencoded",
+            queryParams: null,
+            columns: [
+            	{
+            		checkbox:true
+            		
+            	},
+                {
+                    title: "员工工号",
+                    field: 'staff_id',
+                    align: 'center',
+                    valign: 'middle'
+                },
+                {
+                    title:'培训课程',
+                    field:'train_name',
+                    align:'center',
+                    valign:'middle'
+                },
+                {
+                    title: '参加培训时间',
+                    field: 'train_start_time',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter:function (gain_time){
+                        var date = new Date(gain_time);
+                        return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+                    }
+                },
+                {
+                    title: '培训结束时间',
+                    field: 'train_end_time',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter:function (infect_time){
+                        var date = new Date(infect_time);
+                        return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();}
+                },
+
+                {
+                    title: '培训证明',
+                    field: 'train_certificate',
+                    align: 'center',
+                    valign:'middle'
+                },
+                {
+                    title:'录入时间',
+                    field:'input_time',
+                    align:'center',
+                    valign:'middle',
+                    formatter:function (input_time){
+                        var date = new Date(input_time);
+                        return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();}
+                },
+                {
+                    title:'录入人',
+                    field:'manager',
+                    align:'center',
+                    valign:'middle'
+                },
+                {
+                    title: '操作',
+                    field: 'opr',
+                    width: 180,
+                    align: 'center',
+                    formatter: function (cellval, row) {
+                        var  d = '<button style="background-color: red" id="delete" data-id="98" class="btn btn-xs btn-primary" onclick="dele(\'' + row.staff_id + '\',\''+row.train_start_time+'\')">删除</button>';
+                        return  d;
+                    }
+                }
+            ]
+        });
+    }
+    function add_train()
+    {
+        var staff_id1=$("#staff_id1").val();
+        var train_name=$("#train_name").val();
+        var start_time=$("#train_start_time").val().split('-');
+        var d = new Date();
+        d.setFullYear(start_time[0]);
+        d.setMonth(start_time[1]-1);
+        d.setDate(start_time[2]);
+        var train_start_time = d.getTime();
+        var train_end=$("#train_end_time").val().split('-');
+        d.setFullYear(train_end[0]);
+        d.setMonth(train_end[1]-1);
+        d.setDate(train_end[2]);
+        var train_end_time=d.getTime();
+        var train_certificate=$("#train_certificate").val();
+        $.ajax({
+            url:"service",
+            type:"Post",
+            data:{"action":"add_train","staff_id1":staff_id1,"train_name":train_name,"start_time":train_start_time,"end_time":train_end_time,"train_certificate":train_certificate},
+            dataType:"json",
+            success:function (data) {
+                if(data)
+                {
+                    alert("已成功记录培训信息！");
+                    $("#table3").bootstrapTable('refresh');
+                }
+
+                else
+                    alert("记录培训信息失败！");
+
+            },
+            error:function () {
+                alert("执行出错！");
+
+            }
+
+        })
+    }
+    function del() {
+        var group= new Array();
+        var date= new Array();
+    	var str=$("#table3").bootstrapTable('getSelections');
+    	if(str=="")
+    		{
+    		alert("请选择所要操作的列");
+    		}
+    	else
+    		{
+	    	var jsonStr=JSON.stringify(str);	 
+			var jsonObject=jQuery.parseJSON(jsonStr);
+	    	for(var i=0;i<jsonObject.length;i++)
+	    		{
+	    		group[i]=jsonObject[i].staff_id;
+	    		date[i]=jsonObject[i].train_start_time;
+	    		
+	    		}
+	    	var groupstr = "";
+	    	for(var j = 0;j < group.length; j ++)
+	    		{
+	    		if(j == 0)
+	    			groupstr = groupstr + group[j];
+	    		else
+	    			groupstr = groupstr + "," + group[j];
+	    		}
+	    	var g = "";
+	    	for(var j = 0;j < date.length; j ++)
+	    		{
+	    		if(j == 0)
+	    			g = g + date[j];
+	    		else
+	    			g = g + "," +date[j];
+	    		}
+	    	$.ajax({
+	            url:"service",
+	            data:{
+	                "action":"delete_train",
+	                "group":groupstr,
+	                "date":g
+	            },
+	            type: "Post",
+	            dataType:"json",
+	            success: function (data) {
+	            	if(data)
+	            		{
+	            		alert("删除成功！");
+	            		$("#table3").bootstrapTable('refresh');
+	            		
+	            		}
+	            		
+	            	else
+	            		alert("删除失败！");
+	            }
+	        })
+    		}
+
+    	
+}
+    function dele(d,c)
+    {
+		$.ajax({
+            url:"service",
+            data:{
+                "action":"delete_staff_train",
+                "staff_id":d,
+                "train_start_time":c
+            },
+            type: "Post",
+            dataType:"json",
+            success: function (data) {
+            	if(data)
+            		{
+            		alert("删除成功！");
+            		$("#table3").bootstrapTable('refresh');
+            		
+            		}
+            		
+            	else
+            		alert("删除失败！");
+            }
+        })
+    }
+    function exce(){
+    	 var group= new Array();
+         var date= new Array();
+     	var str=$("#table3").bootstrapTable('getSelections');
+     	if(str=="")
+     		{
+     		alert("请选择所要操作的列");
+     		}
+     	else
+     		{
+ 	    	var jsonStr=JSON.stringify(str);	 
+ 			var jsonObject=jQuery.parseJSON(jsonStr);
+ 	    	for(var i=0;i<jsonObject.length;i++)
+ 	    		{
+ 	    		group[i]=jsonObject[i].staff_id;
+ 	    		date[i]=jsonObject[i].train_start_time;
+ 	    		
+ 	    		}
+ 	    	var groupstr = "";
+ 	    	for(var j = 0;j < group.length; j ++)
+ 	    		{
+ 	    		if(j == 0)
+ 	    			groupstr = groupstr + group[j];
+ 	    		else
+ 	    			groupstr = groupstr + "," + group[j];
+ 	    		}
+ 	    	var g = "";
+ 	    	for(var j = 0;j < date.length; j ++)
+ 	    		{
+ 	    		if(j == 0)
+ 	    			g = g + date[j];
+ 	    		else
+ 	    			g = g + "," +date[j];
+ 	    		}
+ 	    	$.ajax({
+ 	            url:"Daochu",
+ 	            data:{
+ 	                "action":"exce_train",
+ 	                "group":groupstr,
+ 	                "date":g
+ 	            },
+ 	            type: "Post",
+ 	            dataType:"json",
+ 	            success: function (data) {
+ 	            	 	            		
+ 	            }
+ 	            
+ 	        })
+     		}
+    	
+    	
+    }
+</script>
+
+<script>
+
+</script>
+</body>
+</html>
