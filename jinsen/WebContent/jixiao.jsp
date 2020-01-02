@@ -12,7 +12,7 @@
 </head>
 <body>
 <main class="all">
-   <aside class="aside">
+<--   <aside class="aside">
     <header class="aside-head"><img src="img/logo.jpg"> </header>
     <div class="aside-per">
         <div><img src="img/my.jpg" class="per-img"> </div>
@@ -34,7 +34,7 @@
 </aside>		<li><a href="">个人中心</a></li>
     	</ul>
     </div>
-</aside>
+</aside>-->
     <article class="artlce">
         <header class="aside-head">
             <ul class="nav-ul">
