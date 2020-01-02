@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ch-ZN">
+<head>
+    <meta charset="UTF-8">
+    <title>员工职称经历</title>
+    <link rel="stylesheet" href="js/bstable/css/bootstrap.min.css">
+    <link rel="stylesheet" href="js/bstable/css/bootstrap-table.css">
+    <link rel="stylesheet" href="css/all.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1 , user-scalable=no">
+    <script src="js/bstable/js/bootstrap.min.js"></script>
+    <script src="js/bstable/js/jquery-2.2.0.min.js"></script>
+</head>
+<body>
+<div class="container" >
+    <div class="home-tab"><i class="tab-i"></i> 所在位置：<span>员工职称信息管理</span></div>
+    <div class="find-top">
+        <p class="p-tail"><i class="i-tail"></i> 该页面是对员工职称信息的管理</p>
+    </div>
+    <div class="find-top">
+        <button class="add-but" ><i class="glyphicon glyphicon-edit"></i> 导出数据</button> <button class="add-del" onclick="del()"><i class="glyphicon glyphicon-remove"></i> 批量删除</button>
+       <!--  <span class="find-span">员工工号检索：<input type="text" class="input-find"><button class="add-but"><i class="glyphicon glyphicon-search"></i> 查找</button></span> -->
+    </div>
+    <div class="mytab" id="zhicheng"><!--职称信息显示!-->
+        <table id="table2" class="class="table table-hover"">
+            <thead>
+            <tr>
+                <th>员工工号</th>
+                <th>员工姓名</th>
+                <th>获取职称时间</th>
+                <th>职称生效时间</th>
+                <th>职称</th>
+                <th>职称证明</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <p class="table_p"><span style="font-size:18px;font-style: initial;">员工职称信息</span></p>
+
+
+            </tbody>
+        </table>
+        <div class="container">
+            <ul>
+                <li>
+                    <a href="" role="button"  class="btn btn-primary" data-toggle="modal" style="background-color: #00aa00" data-target="#my">添加员工职称信息</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+<!-- 模态框model!-->
+<div class="modal fade" id="my" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">添加职工职称信息</h4>
+            </div>
+            <div class="modal-body">
+                <form action="#">
+                    <div class="form-group">
+                        <label for="staff_id">员工编号</label>
+                        <input type="text" id="staff_id" class="form-control" placeholder="输入员工编号">
+                    </div>
+                    <div class="form-group">
+                        <label for="gain_time">获得时间</label>
+                        <input type="date" id="gain_time" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="effect">生效时间</label>
+                        <input type="date" id="effect" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="positional_titles">职称级别</label>
+                        <select id="positional_titles">
+                            <option>初级工程师</option>
+                            <option>中级工程师</option>
+                            <option>高级工程师</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="certificate_of_title">职称材料</label>
+                        <input type="file" id="certificate_of_title" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="add_certificate()">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/bstable/js/jquery-2.2.0.min.js"></script>
+<script src="js/bstable/js/js-2.1.4.min.js"></script>
+<script src="js/bstable/js/bootstrap-table.js"></script>
+<script src="js/bstable/js/bootstrap.min.js"></script>
+
+
+<script>
+
+    $(document).ready(function() {
+       
+        t2();
+
+    });
+    function t2() {                                      //职称的显示
+        $('#table2').bootstrapTable({
+            method: "post",
+            striped: false,
+            singleSelect: false,
+            url: "service?action=certificate",
+            dataType: "json",
+            pagination: true, //分页
+            pageSize: 10,
+            pageNumber: 1,
+            search: true, //显示搜索框
+            uniqueId:'ID',
+            contentType: "application/x-www-form-urlencoded",
+            queryParams: null,
+            columns: [
+            	{
+            		checkbox:true
+            	},
+                {
+                    title: "员工工号",
+                    field: 'staff_id',
+                    align: 'center',
+                    valign: 'middle'
+                },
+                {
+                    title: '取得职称时间',
+                    field: 'gain_time',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter:function (gain_time){
+                        var date = new Date(gain_time);
+                        return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+                    }
+                },
+                {
+                    title: '生效时间',
+                    field: 'infect_time',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter:function (infect_time){
+                        var date = new Date(infect_time);
+                        return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();}
+                },
+                {
+                    title:'职称',
+                    field:"profession_titles",
+                    align:'center',
+                    valign:'middle'
+
+                },
+                {
+                    title: '职称证明',
+                    field: 'certificate_of_title',
+                    align: 'center',
+                    valign:'middle'
+                },
+                {
+                    title:'录入时间',
+                    field:'input_time',
+                    align:'center',
+                    valign:'middle',
+                    formatter:function (input_time){
+                        var date = new Date(input_time);
+                        return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();}
+                },
+                {
+                    title:'录入人',
+                    field:'manager',
+                    align:'center',
+                    valign:'middle'
+                },
+                {
+                    title: '操作',
+                    field: 'opr',
+                    width: 180,
+                    align: 'center',
+                    formatter: function (cellval, row) {
+                        var  d = '<button style="background-color: red" id="delete" data-id="98" class="btn btn-xs btn-primary" onclick="dele(\'' + row.staff_id + '\',\''+row.gain_time+'\')">删除</button>';
+                        return  d;
+                    }
+                }
+            ]
+        });
+    }
+    function add_certificate() {     //添加职称信息
+        var staff_id1=$("#staff_id").val();
+        var gain=$("#gain_time").val().split('-');
+        var d = new Date();
+        d.setFullYear(gain[0]);
+        d.setMonth(gain[1]-1);
+        d.setDate(gain[2]);
+        var gain_time = d.getTime();
+        var effect=$("#effect").val().split('-');
+        d.setFullYear(effect[0]);
+        d.setMonth(effect[1]-1);
+        d.setDate(effect[2]);
+        var effect_time=d.getTime();
+        var positional_titles=$("#positional_titles").val();
+        var certificate_of_title=$("#certificate_of_title").val();
+        $.ajax({
+            url:"service",
+            type:"Post",
+            data:{"action":"add_certificate","staff_id1":staff_id1,"gain_time":gain_time,"effect":effect_time,"positional_titles":positional_titles,"certificate_of_title":certificate_of_title},
+            dataType:"json",
+            success:function (data) {
+                if(data)
+                {
+                    alert("已成功记录职称信息！");
+                    $("#staff_id").val("");
+                    $("#gain_time").val("");
+                    $("#effect").val("");
+                    $("#positional_titles").val("");
+                    $("#certificate_of_title").val("");
+                    $("#table2").bootstrapTable('refresh');
+                }
+
+                else
+                	{
+                	  alert("记录职称信息失败！");
+                	  $("#staff_id").val("");
+                      $("#gain_time").val("");
+                      $("#effect").val("");
+                      $("#positional_titles").val("");
+                      $("#certificate_of_title").val("");
+                	
+                	}
+                   
+
+            },
+            error:function () {
+                alert("执行出错！");
+
+            }
+
+        })
+
+    }
+    function del() {
+    	        var group= new Array();
+    	        var date= new Array();
+    	    	var str=$("#table2").bootstrapTable('getSelections');
+    	    	if(str=="")
+    	    		{
+    	    		alert("请选择所要操作的列");
+    	    		}
+    	    	else
+    	    		{
+    		    	var jsonStr=JSON.stringify(str);	 
+        			var jsonObject=jQuery.parseJSON(jsonStr);
+        	    	for(var i=0;i<jsonObject.length;i++)
+        	    		{
+        	    		group[i]=jsonObject[i].staff_id;
+        	    		date[i]=jsonObject[i].gain_time;
+        	    		
+        	    		}
+        	    	var groupstr = "";
+        	    	for(var j = 0;j < group.length; j ++)
+        	    		{
+        	    		if(j == 0)
+        	    			groupstr = groupstr + group[j];
+        	    		else
+        	    			groupstr = groupstr + "," + group[j];
+        	    		}
+        	    	var g = "";
+        	    	for(var j = 0;j < date.length; j ++)
+        	    		{
+        	    		if(j == 0)
+        	    			g = g + date[j];
+        	    		else
+        	    			g = g + "," +date[j];
+        	    		}
+        	    	$.ajax({
+        	            url:"service",
+        	            data:{
+        	                "action":"delete_zhicheng",
+        	                "group":groupstr,
+        	                "date":g
+        	            },
+        	            type: "Post",
+        	            dataType:"json",
+        	            success: function (data) {
+        	            	if(data)
+        	            		{
+        	            		alert("删除成功！");
+        	            		$("#table2").bootstrapTable('refresh');
+        	            		
+        	            		}
+        	            		
+        	            	else
+        	            		alert("删除失败！");
+        	            }
+        	        })
+    	    		}
+    
+    	    	
+    }
+    function dele(d,c)
+    {
+		$.ajax({
+            url:"service",
+            data:{
+                "action":"delete_staff_zhicheng",
+                "staff_id":d,
+                "gain_time":c
+            },
+            type: "Post",
+            dataType:"json",
+            success: function (data) {
+            	if(data)
+            		{
+            		alert("删除成功！");
+            		$("#table2").bootstrapTable('refresh');
+            		
+            		}
+            		
+            	else
+            		alert("删除失败！");
+            }
+        })
+    }
+</script>
+
+<script>
+
+</script>
+</body>
+</html>
