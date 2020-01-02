@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta charset="UTF-8">
+    <title>index</title>
+    <link rel="stylesheet" href="css/all.css">
+    <link rel="stylesheet" href="js/jQueryCalendar/calendar.css">
+    <link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel='stylesheet' type='text/css' />
+
+    <!-- font-awesome icons CSS -->
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <!-- //font-awesome icons CSS-->
+
+    <!-- side nav css file -->
+    <link href='css/SidebarNav.min.css' media='all' rel='stylesheet' type='text/css'/>
+    <!-- //side nav css file -->
+    <link href="css/registe.css" rel="stylesheet" type="text/css">
+    <!-- js-->
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/modernizr.custom.js"></script>
+    <style>
+    </style>
+
+    <style>
+#h li{float: left; }
+#h a{font-size:15px;width: 230px; height: 30px;padding: 10px 0;text-align: center;  background: #3c763d; display: block; text-decoration:none; color:white}
+#h a:hover{color:white;background: green}
+    </style>    
+</head>
+<body style="background-color: #ecf0f5;font-family: 微软雅黑;color: #475059;min-width: 1000px;overflow: auto">
+
+<main class="all">
+    <aside class="aside">
+    <header class="aside-head"><img src="img/logo.jpg"> </header>
+    <div class="aside-per">
+        <div><img src="img/my.jpg" class="per-img"> </div>
+        <div><h3>xxxx</h3>
+        <p>行政专员</p>
+        <p>公司人事部一组</p></div>
+    </div>
+    <div class="clear"></div>
+    <div id="h">
+    	<ul style="list-style-type:none; display:table; margin:0 auto">
+                <li><a href="shenhe.html" target="fraName">码单审核</a> </li>
+                <li class="active-li"><a href="tongji.html" target="fraName">统计报表</a> </li>
+    	</ul>
+    </div>
+</aside>
+    <article class="artlce">
+        <header class="aside-head">
+            <ul class="nav-ul">
+                <li><a href="shenhe.html" target="fraName">码单审核</a> </li>
+                <li class="active-li"><a href="tongji.html" target="fraName">统计报表</a> </li>
+            </ul>
+        </header>
+<div class="from_main" >
+    <div class="news_check">
+        <div class="check_left l_left" style="margin-top:40px">
+            <label>查询年份：</label><select style="width: 180px" name="treetype" id="year">
+                            <option value="">--请选择年份--</option>
+                            <option value='2018'>--2018--</option>
+                            <option value='2019'>--2019--</option>
+                            <option value='2020'>--2020--</option>
+                            <option value='2021'>--2021--</option>
+                            <option value='2022'>--2022--</option>
+                            <option value='2023'>--2023--</option>
+                            <option value='2024'>--2024--</option>
+                            <option value='2025'>--2025--</option>
+                            <option value='2026'>--2026--</option>
+                            <option value='2027'>--2027--</option>
+                            </select>
+             <label>查询月份：</label>
+             <select style="width: 180px" name="treetype" id="mounth">
+                            <option value="">--请选择月份--</option>
+                            <option value='all'>--全年--</option>
+                            <option value='1'>--01--</option>
+                            <option value='2'>--02--</option>
+                            <option value='3'>--03--</option>
+                            <option value='4'>--04--</option>
+                            <option value='5'>--05--</option>
+                            <option value='6'>--06--</option>
+                            <option value='7'>--07--</option>
+                            <option value='8'>--08--</option>
+                            <option value='9'>--09--</option>  
+                            <option value='10'>--10--</option>
+                            <option value='11'>--11--</option>
+                            <option value='12'>--12--</option>
+                            </select>
+              <label>查询报表类型：</label>
+             <select style="width: 180px" name="treetype" id="type">
+                            <option value="">--请选择报表类型--</option>
+                            <option value='all'>--所有报表--</option>
+                            <option value='eachcompany'>--分公司销售统计报表--</option>
+                            <option value='xiaoshou'>--木材销售结算登记表--</option>
+                            <option value='salary'>--木材生产工资结算登记表--</option>
+                            <option value='total'>--销售情况汇总表--</option>
+                            </select>
+                        <button>查询</button>
+        </div>
+        <div class="check_right r_right">
+            <a class="btn btn-default"><span class=" glyphicon glyphicon-circle-arrow-down l_left"></span>打印</a>
+            <a class="btn btn-default"><span class=" glyphicon glyphicon-download-alt l_left"></span>导出</a>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+
+
+
+    </article>
+</main>
+</body>
+<script>
+function change(){
+    $(".wait-tab span").click(function(){
+        var ins=$(this).index();
+        $(this).addClass("tab-active").siblings().removeClass('tab-active');
+        $(".tab-all .tab-con").eq(ins).show().siblings().hide();
+    })
+}
+</script>
+<script type="text/javascript" src="js/bstable/js/jquery-2.2.0.min.js"></script>
+<script src="js/bstable/js/bootstrap.min.js"></script>
+<script src="js/bstable/js/bootstrap-table.js"></script>
+<script src="js/bstable/js/bootstrap-table-zh-CN.min.js"></script>
+<script src="js/echarts-all.js"></script>
+<script src="js/analysis.js"></script>
+<script>
+    $('#table').bootstrapTable({
+        method: "get",
+        striped: true,
+        singleSelect: false,
+        url: "json/user.json",
+        dataType: "json",
+        pagination: true, //分页
+        pageSize: 10,
+        pageNumber: 1,
+        search: false, //显示搜索框
+        contentType: "application/x-www-form-urlencoded",
+        queryParams: null,
+        columns: [
+            {
+                checkbox: "true",
+                field: 'check',
+                align: 'center',
+                valign: 'middle'
+            }
+            ,
+            {
+                title: "用户名",
+                field: 'id',
+                align: 'center',
+                valign: 'middle'
+            },
+            {
+                title: '性别',
+                field: 'sex',
+                align: 'center',
+                valign: 'middle'
+            },
+            {
+                title: '年龄',
+                field: 'date',
+                align: 'center',
+                valign: 'middle'
+            },
+            {
+                title: '部门',
+                field: 'person',
+                align: 'center'
+            },
+            {
+                title: '职位',
+                field: 'oper',
+                align: 'center',
+                valign: 'middle'
+            },
+            {
+                title: '角色',
+                field: 'title',
+                align: 'center',
+                valign: 'middle'
+            },
+            {
+                title: '备注',
+                field: 'person',
+                align: 'center'
+            }
+        ]
+    });
+</script>
+</html>
