@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ch-ZN">
+<head>
+    <meta charset="UTF-8">
+    <title>员工学习经历</title>
+    <link rel="stylesheet" href="js/bstable/css/bootstrap.min.css">
+    <link rel="stylesheet" href="js/bstable/css/bootstrap-table.css">
+    <link rel="stylesheet" href="css/all.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1 , user-scalable=no">
+    <script src="js/bstable/js/bootstrap.min.js"></script>
+    <script src="js/bstable/js/jquery-2.2.0.min.js"></script>
+</head>
+<body>
+<div class="container" >
+    <div class="home-tab"><i class="tab-i"></i> 所在位置：<span>员工学习及职称管理</span></div>
+    <div class="find-top">
+        <p class="p-tail"><i class="i-tail"></i> 该页面是显示查询的员工的学习经历及对职称的管理</p>
+    </div>
+    <div class="find-top">
+        <button class="add-but"><i class="glyphicon glyphicon-edit"></i> 批量处理</button> <button class="add-del" onclick="del()"><i class="glyphicon glyphicon-remove"></i> 批量删除</button>
+        <span class="find-span">员工工号检索：<input type="text" class="input-find"><button class="add-but"><i class="glyphicon glyphicon-search"></i> 查找</button></span>
+    </div>
+    <div class="table-con">
+        <table id="table1" class="table">
+
+            <thead>
+            <tr>
+                <th>员工工号</th>
+                <th>员工姓名</th>
+                <th>入学时间</th>
+                <th>毕业时间</th>
+                <th>学历</th>
+                <th>就读学校</th>
+                <th>学历证书</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <p class="table_p"><span style="font-size:18px;font-style: initial;">员工学历信息</span></p>
+
+
+            </tbody>
+        </table>
+        <div class="container">
+            <ul>
+                <li>
+                    <a href="" role="button"  class="btn btn-primary" data-toggle="modal" data-target="#myModal">添加员工学历</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+<!-- 模态框model!-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myreg">
+                    员工学历信息添加
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form action="#">
+                    <div class="form-group">
+                        <label for="regnameid">员工编号</label>
+                        <input type="text" class="form-control" name="name" id="regnameid" placeholder="员工编号">
+                    </div>
+                    <div class="form-group" >
+                        <label for="start_time">入学时间</label>
+                        <input type="date" id="start_time" class="form-control" placeholder="选择入学时间" style="padding: auto;">
+                    </div>
+                    <div class="form-group">
+                        <label for="end_time">毕业时间</label>
+                        <input type="date" id="end_time" class="form-control" placeholder="选择毕业时间">
+                    </div>
+                    <div class="form-group">
+                        <label for="end_kind">毕业学位</label>
+                        <select id="end_kind" class="form-control">
+                            <option selected="">本科</option>
+                            <option>小学</option>
+                            <option>初中</option>
+                            <option>高中</option>
+                            <option>本科</option>
+                            <option>硕士</option>
+                            <option>博士</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="place">就读学校</label>
+                        <input type="text" class="form-control" id="place" placeholder="就读学校">
+                    </div>
+                    <div class="form-group">
+                        <label for="certificate"> 毕业证书</label>
+                        <input type="file" class="form-control" id="certificate">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" id="zhuce" onclick="add_education()">添加</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+</div>
+<script src="js/bstable/js/jquery-2.2.0.min.js"></script>
+<script src="js/bstable/js/js-2.1.4.min.js"></script>
+<script src="js/bstable/js/bootstrap-table.js"></script>
+<script src="js/bstable/js/bootstrap.min.js"></script>
+
+
+<script>
+
+    $(document).ready(function() {
+        t1();
+
+    });
+    function t1(){
+        $("#table1").bootstrapTable({
+            method: "POST",
+            striped: false,
+            singleSelect: false,
+            url: "service?action=select",
+            dataType: "json",
+            pagination: true, //分页
+            pageSize: 10,
+            pageNumber: 1,
+            search: true, //显示搜索框
+            uniqueId:'ID',
+            contentType: "application/x-www-form-urlencoded",
+            queryParams: null,
+            columns: [
+            	{
+            		checkbox:true
+            	},
+                {
+                    title: "员工工号",
+                    field: 'staff_id',
+                    align: 'center',
+                    valign: 'middle'
+                },
+                {
+                    title: '入学时间',
+                    field: 'enrollment_time',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter:function (enrollment_time){
+
+                        var date = new Date(enrollment_time);
+                        return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+                    }
+                },
+                {
+                    title: '毕业时间',
+                    field: 'graduation_time',
+                    align: 'center',
+                    valign: 'middle',
+                    formatter:function (graduaction_time){
+
+                        var date = new Date(graduaction_time);
+                        return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+                    }
+                },
+                {
+                    title:"学位",
+                    field:"certificate",
+                    align:'center',
+                    valign:'middle'
+
+                },
+                {
+                    title: '就读学校',
+                    field: 'graduation_unit',
+                    align: 'center'
+                },
+                {
+                    title:'毕业证书',
+                    field:'staff_certificate',
+                    align:'center'
+                },
+                {
+                    title:'录入时间',
+                    field:'input_time',
+                    align:'center',
+                    formatter:function (input_time){
+                        var date = new Date(input_time);
+                        return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+                    }
+                },
+                {
+                    title:'录入人',
+                    field:'manager',
+                    align:'center'
+                },
+                {
+                    title: '操作',
+                    field: 'opr',
+                    width: 180,
+                    align: 'center',
+                    formatter: function (cellval, row) {
+                        var  d = '<button style="background-color: red" id="delete" data-id="98" class="btn btn-xs btn-primary" onclick="dele(\'' + row.staff_id + '\',\''+row.enrollment_time+'\')">删除</button>';
+                        return  d;
+                    }
+                    }
+                
+            ]
+        });
+    }
+
+    function add_education(){
+
+        var moveInArray = $("#start_time").val().split('-');//获取入学时间
+        var d = new Date();
+        d.setFullYear(moveInArray[0]);
+        d.setMonth(moveInArray[1]-1);
+        d.setDate(moveInArray[2]);
+        var start = d.getTime();
+        var endtime= $("#end_time").val().split('-');//获取毕业的时间
+        d.setFullYear(endtime[0]);
+        d.setMonth(endtime[1]-1);
+        d.setDate(endtime[2]);
+        var end=d.getTime();
+        var name=$("#regnameid").val();
+        // var end=$("#end_time").val();
+        var end_kind=$("#end_kind").val();
+        var place=$("#place").val();
+        var certificate=$("#certificate").val();
+        var manage="小王";
+        var date='2019-8-12';
+        var action='add_education';
+        $.ajax({
+            url:"service",
+            type:"POST",
+            data:{"name":name,"action":"add_education","start":start,"end":end,"end_kind":end_kind,"place":place,"certificate":certificate,"manage":manage,"date":date},
+            datatype:"json",
+            success:function (data) {
+                if(data)
+                {
+
+                    $('#table1').bootstrapTable('refresh');
+                    alert("已成功记录！");
+
+
+
+
+                }
+
+                else
+                    alert("记录失败");
+
+
+            },
+            error:function (data) {
+                alert("记录失败！");
+
+            }
+
+        })
+
+    }
+    function del() {
+        var group= new Array();
+        var date= new Array();
+    	var str=$("#table1").bootstrapTable('getSelections');
+    	if(str=="")
+    		{
+    		alert("请选择所要操作的列");
+    		}
+    	else
+    		{
+	    	var jsonStr=JSON.stringify(str);	 
+			var jsonObject=jQuery.parseJSON(jsonStr);
+	    	for(var i=0;i<jsonObject.length;i++)
+	    		{
+	    		group[i]=jsonObject[i].staff_id;
+	    		date[i]=jsonObject[i].enrollment_time;
+	    		
+	    		}
+	    	var groupstr = "";
+	    	for(var j = 0;j < group.length; j ++)
+	    		{
+	    		if(j == 0)
+	    			groupstr = groupstr + group[j];
+	    		else
+	    			groupstr = groupstr + "," + group[j];
+	    		}
+	    	var g = "";
+	    	for(var j = 0;j < date.length; j ++)
+	    		{
+	    		if(j == 0)
+	    			g = g + date[j];
+	    		else
+	    			g = g + "," +date[j];
+	    		}
+	    	$.ajax({
+	            url:"service",
+	            data:{
+	                "action":"delete_education",
+	                "group":groupstr,
+	                "date":g
+	            },
+	            type: "Post",
+	            dataType:"json",
+	            success: function (data) {
+	            	if(data)
+	            		{
+	            		alert("删除成功！");
+	            		$("#table1").bootstrapTable('refresh');
+	            		
+	            		}
+	            		
+	            	else
+	            		alert("删除失败！");
+	            }
+	        })
+    		}
+
+    	
+}
+   
+    function dele(d,c)
+    {
+		$.ajax({
+            url:"service",
+            data:{
+                "action":"delete_staff_education",
+                "staff_id":d,
+                "enrollment_time":c
+            },
+            type: "Post",
+            dataType:"json",
+            success: function (data) {
+            	if(data)
+            		{
+            		alert("删除成功！");
+            		$("#table1").bootstrapTable('refresh');
+            		
+            		}
+            		
+            	else
+            		alert("删除失败！");
+            }
+        })
+    }
+</script>
+
+<script>
+
+</script>
+</body>
+</html>
