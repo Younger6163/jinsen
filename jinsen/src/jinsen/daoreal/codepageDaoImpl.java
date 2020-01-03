@@ -264,6 +264,7 @@ public class codepageDaoImpl implements codepageDao{
 	        	s.setSmonth(rs.getDouble(2));
 	        	s.setTreetype(rs.getString(3));
 	        	s.setUnitprice(rs.getDouble(4));
+	        	System.out.println("...." +rs.getDouble(4)+ "...");
 				s.setTotalnum(rs.getDouble(5));
 	        	ts.add(s);
 	    }

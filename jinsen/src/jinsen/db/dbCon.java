@@ -11,7 +11,7 @@ public class dbCon {
 	private static String DRIVER = "com.mysql.jdbc.Driver"; 		
 	private static String URL = "jdbc:mysql://localhost:3306/jinsen?Unicode=true&characterEncoding=UTF-8";
 	private static String NAME = "root";					
-	private static String PASSWORD = "123456";						
+	private static String PASSWORD = "6163";						
 	
 	public static Connection getConnection() {
 		Connection connection = null;
